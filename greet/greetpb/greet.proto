@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package greet;
+
+option go_package="greetpb";
+
+// message = データ型. 埋め込みもできるということかな？
+message Greeting {
+	string first_name = 1;
+	string last_name = 2;
+}
+
+/*****************************************
+* Unary
+******************************************/
+// Request
+message GreetRequest {
+	Greeting greeting = 1;
+}
+
+// Response
+message GreetResponse {
+	string result = 1;
+}
+
+/*****************************************
+* Searver Streaming
+******************************************/
+// Request
+message GreetManyTimesRequest {
+	Greeting greeting = 1;
+}
+
+// Response
+message GreetManyTimesResponse {
+	string result = 1;
+}
+
+/*****************************************
+* Client Streaming
+******************************************/
+message LongGreetRequest {
+	Greeting greeting = 1;
+}
+message LongGreetResponse {
+	string result = 1;
+}
+
+/*****************************************
+* BiDi Streaming
+******************************************/
+message GreetEveryoneRequest {
+	Greeting greeting = 1;
+}
+message GreetEveryoneResponse {
+	string result = 1;
+}
+
+/*****************************************
+* Error
+******************************************/
+message SquareRootRequest {
+	int32 number = 1;
+}
+message SquareRootResponse {
+	double number_root = 1;
+}
+
+/*****************************************
+* Deadline
+******************************************/
+message GreetDeadlineRequest {
+	Greeting greeting = 1;
+}
+message GreetDeadlineResponse {
+	string result = 1;
+}
+
+
+// Service
+service GreetService{
+	// Unary
+	rpc Greet(GreetRequest) returns (GreetResponse) {};
+
+	// Server Streaming
+	rpc GreetManyTimes(GreetManyTimesRequest) returns (stream GreetManyTimesResponse) {};
+
+	// Client Streaming
+	rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
+
+	// BiDi Streaming
+	rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
+
+
+	// error handling
+	// this RPC will throw an exception if the sent number is negative
+	// The error being sennt is of type INVALID_ARGUMENT
+	rpc SquareRoot(SquareRootRequest) returns (SquareRootResponse) {};
+
+
+	rpc GreetDeadline(GreetDeadlineRequest) returns (GreetDeadlineResponse) {};
+}
